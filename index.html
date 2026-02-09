@@ -13,7 +13,7 @@ body {
   width: 100%;
   height: 100%;
   background: linear-gradient(to bottom right, #fce7f3, #fdf2f8, #fde2e4);
-  font-family: 'Quicksand', Arial, sans-serif;
+  font-family: 'Arial', sans-serif;
   overflow: hidden;
 }
 
@@ -36,35 +36,30 @@ button {
   cursor: pointer;
   font-weight: bold;
   border-radius: 9999px;
-  padding: 16px 50px;
-  font-size: 18px;
-  transition: all 0.25s ease;
+  padding: 14px 45px;
+  font-size: 16px;
+  transition: all 0.3s ease;
 }
 
 .btn-yes {
   background: linear-gradient(135deg, #ff6b9d 0%, #ff8e53 100%);
   color: white;
-  box-shadow: 0 10px 15px rgba(0,0,0,0.15);
 }
-
-.btn-yes:hover { transform: scale(1.08); }
 
 .btn-no {
   background: #9ca3af;
   color: white;
 }
 
-.music-btn {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  padding: 10px 22px;
-  font-size: 14px;
-  background: white;
-  color: #be185d;
-  border: 2px solid #f9a8d4;
-  border-radius: 9999px;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+/* Animations */
+@keyframes heartFloat {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-120px) scale(0.5); opacity: 0; }
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(200px) rotate(720deg); opacity: 0; }
 }
 </style>
 </head>
@@ -75,37 +70,38 @@ button {
 <audio id="bg-music" loop>
   <source src="your-music.mp3" type="audio/mpeg">
 </audio>
-
-<button id="music-btn" class="music-btn">▶ Play Music</button>
+<button id="music-btn" style="position:fixed;top:10px;right:10px;padding:8px 16px;border-radius:20px;">▶ Play Music</button>
 
 <!-- PAGE 1 -->
-<div id="page1" class="page active" style="flex-direction: column;">
-  <h1 style="font-size:32px;color:#be185d;">A Special Message For You</h1>
-  <p style="color:#fb7185;">Will you open this envelope?</p>
-
-  <div style="display:flex;gap:20px;margin-top:20px;">
+<div id="page1" class="page active" style="flex-direction:column;">
+  <h1 style="color:#be185d;">A Special Message For You</h1>
+  <p style="color:#fb7185;">Will you open this envelope for me?</p>
+  <div style="display:flex;gap:20px;">
     <button id="yes-btn-1" class="btn-yes">Yes 💖</button>
     <button id="no-btn-1" class="btn-no">No 😅</button>
   </div>
 </div>
 
 <!-- PAGE 2 -->
-<div id="page2" class="page" style="flex-direction: column;">
-  <h2 style="font-size:32px;color:#be185d;">Will you be my Valentine? 💕</h2>
-  <div style="display:flex;flex-direction:column;gap:20px;margin-top:20px;">
+<div id="page2" class="page" style="flex-direction:column;">
+  <h2 style="color:#be185d;">Will you be my Valentine? 💕</h2>
+  <div style="display:flex;flex-direction:column;gap:15px;">
     <button id="yes-btn-2" class="btn-yes">OF COURSE 💖</button>
     <button id="no-btn-2" class="btn-no">No 🙈</button>
   </div>
 </div>
 
 <!-- PAGE 3 -->
-<div id="page3" class="page" style="flex-direction: column;">
-  <h1 style="font-size:40px;color:#be185d;">YAY!! 💖</h1>
-  <p style="font-size:20px;color:#fb7185;">I can't wait! You made me the happiest 💕</p>
+<div id="page3" class="page" style="flex-direction:column;position:relative;">
+  <h1 style="color:#be185d;font-size:40px;">YAYYY!! 💖</h1>
+  <p style="color:#fb7185;font-size:20px;">I can't wait! You made me the happiest 💕</p>
+  <div id="hearts"></div>
+  <div id="confetti"></div>
 </div>
 
 <script>
-function showPage(num) {
+/* PAGE SWITCH */
+function showPage(num){
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page' + num).classList.add('active');
 }
@@ -115,20 +111,65 @@ const music = document.getElementById('bg-music');
 const musicBtn = document.getElementById('music-btn');
 let playing = false;
 
-musicBtn.addEventListener('click', () => {
-  if (!playing) {
+musicBtn.onclick = () => {
+  if(!playing){
     music.play();
-    musicBtn.textContent = "⏸ Pause Music";
+    musicBtn.textContent = '⏸ Pause Music';
   } else {
     music.pause();
-    musicBtn.textContent = "▶ Play Music";
+    musicBtn.textContent = '▶ Play Music';
   }
   playing = !playing;
-});
+};
 
 /* BUTTON FLOW */
 document.getElementById('yes-btn-1').onclick = () => showPage(2);
-document.getElementById('yes-btn-2').onclick = () => showPage(3);
+document.getElementById('yes-btn-2').onclick = () => {
+  showPage(3);
+  hearts();
+  confetti();
+};
+
+/* RUNNING NO BUTTON */
+const noBtn = document.getElementById('no-btn-2');
+noBtn.onmouseenter = () => {
+  const x = Math.random() * 200 - 100;
+  const y = Math.random() * 100 - 50;
+  noBtn.style.transform = `translate(${x}px, ${y}px)`;
+};
+
+/* HEARTS EFFECT */
+function hearts(){
+  for(let i=0;i<15;i++){
+    setTimeout(()=>{
+      const h = document.createElement('div');
+      h.textContent = '💖';
+      h.style.position='absolute';
+      h.style.left=Math.random()*100+'%';
+      h.style.bottom='0';
+      h.style.fontSize='24px';
+      h.style.animation='heartFloat 2s ease-out forwards';
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(),2000);
+    }, i*150);
+  }
+}
+
+/* CONFETTI EFFECT */
+function confetti(){
+  for(let i=0;i<30;i++){
+    const c = document.createElement('div');
+    c.style.position='absolute';
+    c.style.left=Math.random()*100+'%';
+    c.style.top='-10px';
+    c.style.width='8px';
+    c.style.height='8px';
+    c.style.backgroundColor=['#ff6b9d','#ff8e53','#ffd700','#ff69b4'][Math.floor(Math.random()*4)];
+    c.style.animation=`confettiFall ${2+Math.random()*2}s linear forwards`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  }
+}
 </script>
 
 </body>
