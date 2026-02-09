@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine Invitation</title>
+
+<style>
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom right, #fce7f3, #fdf2f8, #fde2e4);
+  font-family: 'Quicksand', Arial, sans-serif;
+  overflow: hidden;
+}
+
+.page {
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.page.active { display: flex; }
+
+button {
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 9999px;
+  padding: 16px 50px;
+  font-size: 18px;
+  transition: all 0.25s ease;
+}
+
+.btn-yes {
+  background: linear-gradient(135deg, #ff6b9d 0%, #ff8e53 100%);
+  color: white;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.15);
+}
+
+.btn-yes:hover { transform: scale(1.08); }
+
+.btn-no {
+  background: #9ca3af;
+  color: white;
+}
+
+.music-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  padding: 10px 22px;
+  font-size: 14px;
+  background: white;
+  color: #be185d;
+  border: 2px solid #f9a8d4;
+  border-radius: 9999px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+</style>
+</head>
+
+<body>
+
+<!-- AUDIO -->
+<audio id="bg-music" loop>
+  <source src="your-music.mp3" type="audio/mpeg">
+</audio>
+
+<button id="music-btn" class="music-btn">▶ Play Music</button>
+
+<!-- PAGE 1 -->
+<div id="page1" class="page active" style="flex-direction: column;">
+  <h1 style="font-size:32px;color:#be185d;">A Special Message For You</h1>
+  <p style="color:#fb7185;">Will you open this envelope?</p>
+
+  <div style="display:flex;gap:20px;margin-top:20px;">
+    <button id="yes-btn-1" class="btn-yes">Yes 💖</button>
+    <button id="no-btn-1" class="btn-no">No 😅</button>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div id="page2" class="page" style="flex-direction: column;">
+  <h2 style="font-size:32px;color:#be185d;">Will you be my Valentine? 💕</h2>
+  <div style="display:flex;flex-direction:column;gap:20px;margin-top:20px;">
+    <button id="yes-btn-2" class="btn-yes">OF COURSE 💖</button>
+    <button id="no-btn-2" class="btn-no">No 🙈</button>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div id="page3" class="page" style="flex-direction: column;">
+  <h1 style="font-size:40px;color:#be185d;">YAY!! 💖</h1>
+  <p style="font-size:20px;color:#fb7185;">I can't wait! You made me the happiest 💕</p>
+</div>
+
+<script>
+function showPage(num) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page' + num).classList.add('active');
+}
+
+/* MUSIC BUTTON */
+const music = document.getElementById('bg-music');
+const musicBtn = document.getElementById('music-btn');
+let playing = false;
+
+musicBtn.addEventListener('click', () => {
+  if (!playing) {
+    music.play();
+    musicBtn.textContent = "⏸ Pause Music";
+  } else {
+    music.pause();
+    musicBtn.textContent = "▶ Play Music";
+  }
+  playing = !playing;
+});
+
+/* BUTTON FLOW */
+document.getElementById('yes-btn-1').onclick = () => showPage(2);
+document.getElementById('yes-btn-2').onclick = () => showPage(3);
+</script>
+
+</body>
+</html>
